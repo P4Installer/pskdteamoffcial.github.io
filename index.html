@@ -2,179 +2,173 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XTR Bank</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>P4Bank</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--tg-theme-secondary-bg-color, #f1f1f1);
-            color: var(--tg-theme-text-color, #000000);
-            padding: 20px;
+        :root {
+            --bg-color: #1a1f26;
+            --card-bg: #242c37;
+            --accent-blue: #4086ce;
+            --text-main: #ffffff;
+            --text-hint: #708499;
         }
-        
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--tg-theme-bg-color, var(--bg-color));
+            color: var(--tg-theme-text-color, var(--text-main));
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         /* Карточка профиля */
         .profile-card {
-            background-color: var(--tg-theme-bg-color, #ffffff);
+            background-color: var(--tg-theme-secondary-bg-color, var(--card-bg));
+            width: 100%;
+            max-width: 400px;
             border-radius: 16px;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            box-sizing: border-box;
         }
+
         .avatar {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background-color: var(--tg-theme-button-color, #3390ec);
-            color: #fff;
+            background-color: var(--accent-blue);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            object-fit: cover;
-        }
-        .user-info h2 { font-size: 18px; margin-bottom: 4px; }
-        .user-info p { 
-            font-size: 14px; 
-            color: var(--tg-theme-hint-color, #999); 
-        }
-
-        /* Карточка баланса */
-        .balance-card {
-            background: linear-gradient(135deg, var(--tg-theme-button-color, #3390ec), #2b7bc4);
-            border-radius: 20px;
-            padding: 30px 20px;
-            color: #ffffff;
-            text-align: center;
-            box-shadow: 0 8px 20px rgba(51, 144, 236, 0.3);
-            margin-bottom: 25px;
-            position: relative;
+            color: white;
             overflow: hidden;
         }
-        .balance-title { font-size: 14px; opacity: 0.9; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
-        .balance-amount { font-size: 42px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px;}
-        .balance-amount span { font-size: 28px; }
 
-        /* Форма пополнения */
-        .action-section {
-            background-color: var(--tg-theme-bg-color, #ffffff);
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .user-info h3 { margin: 0; font-size: 18px; }
+        .user-info p { margin: 2px 0 0; color: var(--text-hint); font-size: 14px; }
+
+        /* Синяя карточка баланса */
+        .balance-card {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 30px 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+        }
+
+        .balance-card span { font-size: 14px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-value { font-size: 42px; font-weight: 800; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .star-icon { color: #f3bc4c; font-size: 35px; }
+
+        /* Секция ввода */
+        .input-group {
+            background-color: var(--tg-theme-secondary-bg-color, var(--card-bg));
+            width: 100%;
+            max-width: 400px;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-sizing: border-box;
         }
-        .action-section h3 { margin-bottom: 15px; font-size: 16px;}
-        
+
+        label { display: block; margin-bottom: 12px; font-weight: 600; font-size: 15px; }
+
         input {
             width: 100%;
-            padding: 14px;
-            margin-bottom: 15px;
+            background: #1c232d;
+            border: 1px solid #303b4a;
             border-radius: 10px;
-            border: 1px solid var(--tg-theme-secondary-bg-color, #eee);
-            background-color: var(--tg-theme-secondary-bg-color, #f9f9f9);
-            color: var(--tg-theme-text-color, #000);
-            font-size: 16px;
+            padding: 12px;
+            color: white;
+            font-size: 18px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
             outline: none;
-            transition: border 0.2s;
         }
-        input:focus { border-color: var(--tg-theme-button-color, #3390ec); }
-        
+
         button {
-            background-color: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
+            width: 100%;
+            background-color: var(--tg-theme-button-color, var(--accent-blue));
+            color: var(--tg-theme-button-text-color, white);
             border: none;
             padding: 14px;
             border-radius: 10px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
-            width: 100%;
             transition: opacity 0.2s;
         }
+
         button:active { opacity: 0.8; }
+
+        .footer { margin-top: auto; padding: 20px; color: var(--text-hint); font-size: 13px; }
     </style>
 </head>
 <body>
 
     <div class="profile-card">
-        <img id="user-avatar" class="avatar" style="display: none;" alt="Avatar">
-        <div id="user-initials" class="avatar">?</div>
+        <div class="avatar" id="user-avatar">?</div>
         <div class="user-info">
-            <h2 id="user-name">Загрузка...</h2>
-            <p id="user-id">ID: 0000000</p>
+            <h3 id="user-name">Загрузка...</h3>
+            <p id="user-id">ID: 00000000</p>
         </div>
     </div>
 
     <div class="balance-card">
-        <div class="balance-title">Ваш счет XTR</div>
-        <div class="balance-amount"><span id="balance-value">0</span> ⭐️</div>
+        <span>Ваш счет XTR</span>
+        <div class="balance-value">
+            <span id="balance">0</span>
+            <span class="star-icon">⭐</span>
+        </div>
     </div>
 
-    <div class="action-section">
-        <h3>Пополнить счет</h3>
-        <input type="number" id="amount" inputmode="numeric" placeholder="Введите количество звезд" min="1">
-        <button onclick="requestInvoice()">Купить ⭐️</button>
+    <div class="input-group">
+        <label>Пополнить счет</label>
+        <input type="number" id="amount" placeholder="Количество звезд" min="1">
+        <button onclick="sendData()">Купить ⭐</button>
     </div>
+
+    <div class="footer">@P4BankBot</div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем на весь экран
-        tg.ready();
+        tg.expand();
 
-        // 1. Получаем данные пользователя из Telegram
+        // Загрузка данных профиля
         const user = tg.initDataUnsafe?.user;
         
         if (user) {
             document.getElementById('user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
             document.getElementById('user-id').innerText = 'ID: ' + user.id;
             
-            // Если есть аватарка, показываем её, иначе инициалы
             if (user.photo_url) {
-                const img = document.getElementById('user-avatar');
-                img.src = user.photo_url;
-                img.style.display = 'block';
-                document.getElementById('user-initials').style.display = 'none';
+                document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}">`;
             } else {
-                document.getElementById('user-initials').innerText = user.first_name.charAt(0);
+                document.getElementById('user-avatar').innerText = user.first_name[0];
             }
         }
 
-        // 2. Получаем баланс из URL (переданный ботом)
-        const urlParams = new URLSearchParams(window.location.search);
-        const userBalance = urlParams.get('balance') || '0';
-        
-        // Анимация числа баланса для красоты
-        let currentDisplay = 0;
-        const targetBalance = parseInt(userBalance);
-        const interval = setInterval(() => {
-            if (currentDisplay >= targetBalance) {
-                document.getElementById('balance-value').innerText = targetBalance;
-                clearInterval(interval);
+        function sendData() {
+            const val = document.getElementById('amount').value;
+            if (val > 0) {
+                tg.sendData(JSON.stringify({action: 'deposit', amount: parseInt(val)}));
             } else {
-                currentDisplay += Math.ceil(targetBalance / 20) || 1;
-                document.getElementById('balance-value').innerText = currentDisplay;
+                tg.showAlert("Введите сумму!");
             }
-        }, 30);
-
-        // 3. Отправка данных на пополнение
-        function requestInvoice() {
-            const amountInput = document.getElementById('amount').value;
-            const amount = parseInt(amountInput);
-            
-            if (!amount || amount <= 0) {
-                tg.showAlert("Введите сумму больше нуля.");
-                return;
-            }
-
-            // Кнопка Haptic Feedback (вибрация при нажатии)
-            tg.HapticFeedback.impactOccurred('light');
-
-            const data = JSON.stringify({ action: 'deposit', amount: amount });
-            tg.sendData(data);
         }
     </script>
 </body>
