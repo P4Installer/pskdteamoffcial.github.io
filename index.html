@@ -27,7 +27,6 @@
             box-sizing: border-box;
         }
 
-        /* Навигация */
         .tabs {
             display: flex;
             background: var(--sec-bg);
@@ -56,7 +55,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Контент */
         .content { display: none; }
         .content.active { display: block; animation: fadeIn 0.3s ease; }
 
@@ -65,7 +63,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Карточки и баланс */
         .balance-card {
             text-align: center;
             padding: 40px 20px;
@@ -86,7 +83,6 @@
             border: 1px solid var(--card-border);
         }
 
-        /* Сетка подарков */
         .gift-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -105,10 +101,9 @@
 
         .gift-card:active { transform: scale(0.96); }
         .gift-emoji { font-size: 32px; display: block; margin-bottom: 8px; }
-        .gift-name { font-size: 13px; font-weight: 500; display: block; margin-bottom: 5px; }
+        .gift-name { font-size: 11px; font-weight: 500; display: block; margin-bottom: 5px; }
         .gift-price { color: #f3bc4c; font-weight: bold; font-size: 14px; }
 
-        /* Поля и кнопки */
         input {
             width: 100%;
             padding: 14px;
@@ -151,10 +146,10 @@
     <div id="main" class="content active">
         <div class="balance-card">
             <div style="color: var(--hint); font-size: 12px; letter-spacing: 1px;">ДОСТУПНО</div>
-            <div class="balance-val">0 <span class="star">⭐</span></div>
+            <div class="balance-val" id="user_balance">0 <span class="star">⭐</span></div>
         </div>
         <div class="card" style="text-align: center; color: var(--hint);">
-            История операций пуста
+            Все операции защищены P4Bank
         </div>
     </div>
 
@@ -169,12 +164,11 @@
             <input type="number" id="crypto_amt" placeholder="Сумма в USDT">
             <button class="btn crypto-btn" onclick="sendPay('crypto', 'crypto_amt')">Оплатить через CryptoBot 💎</button>
         </div>
-        <p class="hint-text">Средства зачисляются автоматически</p>
     </div>
 
     <div id="shop" class="content">
         <div class="card">
-            <b>Вывод в подарки</b>
+            <b>Магазин подарков</b>
             <div class="gift-grid">
                 <div class="gift-card" onclick="buyGift('ny_bear')">
                     <span class="gift-emoji">🧸</span>
@@ -188,12 +182,12 @@
                 </div>
                 <div class="gift-card" onclick="buyGift('love_bear')">
                     <span class="gift-emoji">🧸❤️</span>
-                    <span class="gift-name">Мишка влюбленных</span>
+                    <span class="gift-name">Мишка Love</span>
                     <div class="gift-price">55 ⭐</div>
                 </div>
                 <div class="gift-card" onclick="buyGift('love_heart')">
                     <span class="gift-emoji">💝</span>
-                    <span class="gift-name">Сердце влюбленных</span>
+                    <span class="gift-name">Сердце Love</span>
                     <div class="gift-price">55 ⭐</div>
                 </div>
                 <div class="gift-card" onclick="buyGift('girl_bear')">
@@ -203,27 +197,37 @@
                 </div>
             </div>
         </div>
-        <p class="hint-text">Все подарки стоят 55 звезд</p>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // ФУНКЦИЯ ПОЛУЧЕНИЯ БАЛАНСА ИЗ URL
+        function updateBalance() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const balance = urlParams.get('balance');
+            if (balance !== null) {
+                document.getElementById('user_balance').innerHTML = `${balance} <span class="star">⭐</span>`;
+            }
+        }
+        
+        // Запускаем при загрузке
+        updateBalance();
+
         function switchTab(id) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             event.currentTarget.classList.add('active');
-            tg.HapticFeedback.impactOccurred('light');
+            tg.HapticFeedback.impactOccurred('medium');
         }
 
         function sendPay(type, inputId) {
             const val = document.getElementById(inputId).value;
             if (val > 0) {
                 tg.sendData(JSON.stringify({type: type, amount: val}));
-            } else {
-                tg.showAlert("Введите корректную сумму");
+                tg.close();
             }
         }
 
@@ -231,6 +235,7 @@
             tg.showConfirm("Купить этот подарок за 55 ⭐?", (ok) => {
                 if (ok) {
                     tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId}));
+                    tg.close();
                 }
             });
         }
