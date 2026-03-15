@@ -2,267 +2,80 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>P4Bank - Premium XTR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>P4Bank</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Основные переменные темы, привязанные к Telegram */
         :root {
-            --bg-color: var(--tg-theme-bg-color, #13171c);
-            --text-color: var(--tg-theme-text-color, #ffffff);
-            --hint-color: var(--tg-theme-hint-color, #8b96a3);
-            --accent-color: var(--tg-theme-button-color, #248bfe);
-            --button-text: var(--tg-theme-button-text-color, #ffffff);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #1a2027);
-            
-            /* Дополнительные премиум-цвета */
-            --star-gold: #f3bc4c;
-            --card-glass: rgba(255, 255, 255, 0.04);
-            --card-border: rgba(255, 255, 255, 0.08);
+            --bg: var(--tg-theme-bg-color, #13171c);
+            --text: var(--tg-theme-text-color, #ffffff);
+            --accent: var(--tg-theme-button-color, #248bfe);
+            --sec-bg: var(--tg-theme-secondary-bg-color, #1c232d);
+            --hint: var(--tg-theme-hint-color, #8b96a3);
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Общий контейнер для центрирования на больших экранах */
-        .app-container {
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        /* Главная карточка баланса (Glassmorphism) */
-        .main-balance-card {
-            background: var(--card-glass);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 40px 20px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Легкий блик на карточке */
-        .main-balance-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 70%);
-            transform: rotate(30deg);
-        }
-
-        .balance-label {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--hint-color);
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .balance-value-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .balance-value {
-            font-size: 56px;
-            font-weight: 800;
-            line-height: 1;
-            background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .star-icon {
-            font-size: 44px;
-            color: var(--star-gold);
-            filter: drop-shadow(0 0 10px rgba(243, 188, 76, 0.5));
-        }
-
-        /* Секция действий */
-        .action-section {
-            background-color: var(--secondary-bg);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--card-border);
-        }
-
-        .section-header {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--text-color);
-        }
-
-        /* Стиль поля ввода */
-        .input-wrapper {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 16px;
-            padding-right: 50px; /* Место для иконки */
-            color: var(--text-color);
-            font-size: 18px;
-            font-weight: 500;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--accent-color);
-        }
-
-        input[type="number"]::placeholder {
-            color: var(--hint-color);
-            font-weight: 400;
-        }
-
-        .input-star {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--star-gold);
-            font-size: 18px;
-        }
-
-        /* Кнопка */
-        .pay-button {
-            width: 100%;
-            background-color: var(--accent-color);
-            color: var(--button-text);
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .pay-button:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-
-        /* Убираем стрелочки у input number */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        /* Футер */
-        .footer {
-            margin-top: auto;
-            padding: 30px 0 10px;
-            text-align: center;
-            color: var(--hint-color);
-            font-size: 14px;
-            font-weight: 400;
-        }
-
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+        .tabs { display: flex; background: var(--sec-bg); padding: 5px; border-radius: 14px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 12px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .tab.active { background: var(--bg); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .content { display: none; }
+        .content.active { display: block; }
+        .balance-card { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, rgba(36,139,254,0.1), rgba(36,139,254,0.05)); border-radius: 24px; margin-bottom: 20px; }
+        .card { background: var(--sec-bg); padding: 20px; border-radius: 18px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #303b4a; background: #12171d; color: white; box-sizing: border-box; font-size: 16px; outline: none; }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        .btn:active { transform: scale(0.98); }
+        .stars-btn { background: #f3bc4c; color: #000; }
+        .crypto-btn { background: #0088cc; }
+        .label { font-size: 14px; color: var(--hint); margin-bottom: 5px; display: block; }
     </style>
 </head>
 <body>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('main')">Кошелек</div>
+        <div class="tab" onclick="switchTab('deposit')">Пополнить</div>
+    </div>
 
-    <div class="app-container">
-        <div class="main-balance-card">
-            <div class="balance-label">Доступный баланс</div>
-            <div class="balance-value-container">
-                <span class="balance-value" id="balance">0</span>
-                <span class="star-icon">⭐</span>
-            </div>
+    <div id="main" class="content active">
+        <div class="balance-card">
+            <div style="color: var(--hint); font-size: 12px; letter-spacing: 1px;">ВАШ БАЛАНС</div>
+            <div style="font-size: 44px; font-weight: 800; margin: 10px 0;">0 <span style="color: #f3bc4c;">⭐</span></div>
+        </div>
+        <div class="card" style="text-align: center; color: var(--hint);">История транзакций пуста</div>
+    </div>
+
+    <div id="deposit" class="content">
+        <div class="card">
+            <span class="label">Пополнение через Telegram</span>
+            <input type="number" id="stars_amt" placeholder="Количество звезд">
+            <button class="btn stars-btn" onclick="sendPay('stars', 'stars_amt')">Купить Stars ⭐</button>
         </div>
 
-        <div class="action-section">
-            <div class="section-header">Пополнить счет XTR</div>
-            <div class="input-wrapper">
-                <input type="number" id="amount" placeholder="Введите сумму" min="1" inputmode="numeric">
-                <span class="input-star">⭐</span>
-            </div>
-            <button class="pay-button" onclick="sendDeposit()">
-                Купить Звезды
-            </button>
-        </div>
-
-        <div class="footer">
-            P4Bank • @P4BankBot
+        <div class="card">
+            <span class="label">Пополнение криптовалютой</span>
+            <input type="number" id="crypto_amt" placeholder="Сумма в USDT">
+            <button class="btn crypto-btn" onclick="sendPay('crypto', 'crypto_amt')">Оплатить через CryptoBot 💎</button>
         </div>
     </div>
 
     <script>
-        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
-        
-        // Сообщаем, что приложение готово и расширяем его
-        tg.ready();
         tg.expand();
 
-        // Устанавливаем цвет Header'а (верхней полоски) в цвет фона
-        tg.setHeaderColor(tg.themeParams.bg_color || '#13171c');
-
-        // Функция отправки данных в бота
-        function sendDeposit() {
-            const amountInput = document.getElementById('amount');
-            const amount = parseInt(amountInput.value);
-
-            if (!amount || amount <= 0) {
-                tg.showAlert("Пожалуйста, введите корректное количество звезд (минимум 1).");
-                amountInput.focus();
-                return;
-            }
-
-            // Создаем JSON с данными
-            const data = {
-                action: 'deposit',
-                amount: amount
-            };
-
-            // Отправляем данные бота и закрываем WebApp
-            // (Бот должен поймать этот message и выставить счет в чате)
-            tg.sendData(JSON.stringify(data));
+        function switchTab(id) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        // Необязательно: Ещё один способ получить баланс (если бот его присылает при старте)
-        // Но сейчас мы просто оставляем '0', бот его обновит через message после оплаты.
+        function sendPay(type, inputId) {
+            const val = document.getElementById(inputId).value;
+            if (val > 0) {
+                tg.sendData(JSON.stringify({type: type, amount: val}));
+            } else {
+                tg.showAlert("Введите сумму!");
+            }
+        }
     </script>
 </body>
 </html>
