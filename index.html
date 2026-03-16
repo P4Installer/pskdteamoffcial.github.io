@@ -10,20 +10,42 @@
             --bg: #13171c; --text: #ffffff; --accent: #248bfe;
             --sec-bg: #1c232d; --hint: #8b96a3; --card-border: rgba(255, 255, 255, 0.08);
         }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
-        .tabs { display: flex; background: var(--sec-bg); padding: 4px; border-radius: 14px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-size: 14px; }
+        body {
+            font-family: -apple-system, sans-serif;
+            background-color: var(--bg); color: var(--text);
+            margin: 0; padding: 15px; box-sizing: border-box;
+        }
+        .tabs {
+            display: flex; background: var(--sec-bg); padding: 4px; border-radius: 14px; margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px;
+        }
         .tab.active { background: var(--bg); color: var(--accent); }
         .content { display: none; }
         .content.active { display: block; }
-        .balance-card { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, rgba(36,139,254,0.15), rgba(36,139,254,0.05)); border-radius: 24px; border: 1px solid var(--card-border); }
-        .balance-val { font-size: 48px; font-weight: 800; }
+        .balance-card {
+            text-align: center; padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(36,139,254,0.15), rgba(36,139,254,0.05));
+            border-radius: 24px; margin-bottom: 20px; border: 1px solid var(--card-border);
+        }
+        .balance-val { font-size: 48px; font-weight: 800; margin: 10px 0; }
         .star { color: #f3bc4c; }
-        .card { background: var(--sec-bg); padding: 18px; border-radius: 18px; margin-bottom: 15px; border: 1px solid var(--card-border); }
+        .card {
+            background: var(--sec-bg); padding: 18px; border-radius: 18px; margin-bottom: 15px; border: 1px solid var(--card-border);
+        }
         .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .gift-card { background: var(--bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 16px; text-align: center; }
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
-        .stars-btn { background: #f3bc4c; color: #000; }
+        .gift-card {
+            background: var(--bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 16px; text-align: center;
+        }
+        input {
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px;
+            border: 1px solid var(--card-border); background: var(--bg); color: #fff; box-sizing: border-box;
+        }
+        .btn {
+            width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; background: #f3bc4c; color: #000;
+        }
+        .footer { text-align: center; color: var(--hint); font-size: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -38,6 +60,17 @@
             <div style="color: var(--hint); font-size: 12px;">ДОСТУПНО</div>
             <div class="balance-val" id="user_balance">... <span class="star">⭐</span></div>
         </div>
+        <div class="card" style="text-align: center; color: var(--hint);">
+            Все операции защищены P4Bank
+        </div>
+    </div>
+
+    <div id="deposit" class="content">
+        <div class="card">
+            <b>Пополнение через Telegram Stars</b>
+            <input type="number" id="stars_amt" placeholder="Введите кол-во звезд">
+            <button class="btn" onclick="sendPay()">Купить ⭐</button>
+        </div>
     </div>
 
     <div id="shop" class="content">
@@ -50,42 +83,42 @@
         </div>
     </div>
 
-<script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    <div class="footer">@P4BankBot</div>
 
-    function updateBalanceFromUrl() {
-        // Читаем параметры из ссылки
-        const urlParams = new URLSearchParams(window.location.search);
-        const balance = urlParams.get('balance');
-        
-        if (balance !== null) {
-            document.getElementById('user_balance').innerHTML = `${balance} <span class="star">⭐</span>`;
-        } else {
-            document.getElementById('user_balance').innerHTML = `0 <span class="star">⭐</span>`;
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function updateBalance() {
+            const params = new URLSearchParams(window.location.search);
+            const bal = params.get('balance');
+            document.getElementById('user_balance').innerHTML = (bal || 0) + ' <span class="star">⭐</span>';
         }
-    }
+        updateBalance();
 
-    // Запускаем при открытии
-    updateBalanceFromUrl();
+        function switchTab(id) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
 
-    function switchTab(id) {
-        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-        tg.HapticFeedback.impactOccurred('light');
-        // При переключении вкладок баланс остается прежним
-    }
-
-    function buyGift(giftId) {
-        tg.showConfirm("Купить за 55 ⭐?", (ok) => {
-            if (ok) {
-                tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId}));
+        function sendPay() {
+            const amt = document.getElementById('stars_amt').value;
+            if(amt > 0) {
+                tg.sendData(JSON.stringify({type: 'stars', amount: amt}));
                 tg.close();
             }
-        });
-    }
-</script>
+        }
+
+        function buyGift(id) {
+            tg.showConfirm("Купить за 55 ⭐?", (ok) => {
+                if(ok) {
+                    tg.sendData(JSON.stringify({type: 'withdraw_gift', id: id}));
+                    tg.close();
+                }
+            });
+        }
+    </script>
 </body>
 </html>
