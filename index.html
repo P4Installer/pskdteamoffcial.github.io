@@ -7,114 +7,255 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #13171c; --text: #ffffff; --accent: #248bfe;
-            --sec-bg: #1c232d; --hint: #8b96a3; --card-border: rgba(255, 255, 255, 0.08);
+            --bg: #0e1217; 
+            --text: #ffffff; 
+            --accent: #248bfe;
+            --sec-bg: #171d25; 
+            --hint: #707986; 
+            --card-bg: rgba(28, 37, 48, 0.6);
+            --border: rgba(255, 255, 255, 0.05);
         }
+
         body {
-            font-family: -apple-system, sans-serif;
-            background-color: var(--bg); color: var(--text);
-            margin: 0; padding: 15px; box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 16px;
+            -webkit-user-select: none;
         }
+
+        /* Табы */
         .tabs {
-            display: flex; background: var(--sec-bg); padding: 4px; border-radius: 14px; margin-bottom: 20px;
+            display: flex;
+            background: var(--sec-bg);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 24px;
         }
+
         .tab {
-            flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px;
+            flex: 1;
+            padding: 8px 0;
+            text-align: center;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--hint);
+            transition: 0.2s;
         }
-        .tab.active { background: var(--bg); color: var(--accent); }
-        .content { display: none; }
-        .content.active { display: block; }
+
+        .tab.active {
+            background: #232a35;
+            color: var(--accent);
+        }
+
+        /* Карточка баланса */
         .balance-card {
-            text-align: center; padding: 40px 20px;
-            background: linear-gradient(135deg, rgba(36,139,254,0.15), rgba(36,139,254,0.05));
-            border-radius: 24px; margin-bottom: 20px; border: 1px solid var(--card-border);
+            text-align: center;
+            padding: 35px 0;
+            background: radial-gradient(circle at top right, rgba(36,139,254,0.1), transparent), var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            margin-bottom: 20px;
         }
-        .balance-val { font-size: 48px; font-weight: 800; margin: 10px 0; }
-        .star { color: #f3bc4c; }
-        .card {
-            background: var(--sec-bg); padding: 18px; border-radius: 18px; margin-bottom: 15px; border: 1px solid var(--card-border);
+
+        .balance-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--hint);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
         }
-        .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .gift-card {
-            background: var(--bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 16px; text-align: center;
+
+        .balance-val {
+            font-size: 44px;
+            font-weight: 700;
+            margin: 8px 0;
         }
+
+        .star { color: #f4b400; }
+
+        /* Контент */
+        .content { display: none; }
+        .content.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Пополнение (Оформление инпута) */
+        .input-group {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .input-group b {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
         input {
-            width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px;
-            border: 1px solid var(--card-border); background: var(--bg); color: #fff; box-sizing: border-box;
+            width: 100%;
+            background: #131922;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px;
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            outline: none;
         }
+
+        /* Сетка подарков (Магазин) */
+        .gift-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .gift-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px 10px;
+            border-radius: 20px;
+            text-align: center;
+            transition: 0.1s;
+        }
+
+        .gift-card:active { transform: scale(0.97); background: rgba(255,255,255,0.03); }
+
+        .gift-icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .gift-name {
+            font-size: 13px;
+            color: var(--hint);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .gift-price {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        /* Кнопка */
         .btn {
-            width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; background: #f3bc4c; color: #000;
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
         }
-        .footer { text-align: center; color: var(--hint); font-size: 12px; margin-top: 20px; }
+
+        .btn-stars {
+            background: #f3bc4c;
+            color: #000;
+        }
+
+        .footer-info {
+            text-align: center;
+            font-size: 12px;
+            color: var(--hint);
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
+
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('main')">Кошелек</div>
+        <div class="tab active" onclick="switchTab('main')">Главная</div>
         <div class="tab" onclick="switchTab('deposit')">Пополнить</div>
         <div class="tab" onclick="switchTab('shop')">Магазин</div>
     </div>
 
     <div id="main" class="content active">
         <div class="balance-card">
-            <div style="color: var(--hint); font-size: 12px;">ДОСТУПНО</div>
-            <div class="balance-val" id="user_balance">... <span class="star">⭐</span></div>
+            <div class="balance-label">Доступные звезды</div>
+            <div class="balance-val" id="user_balance">0 <span class="star">⭐</span></div>
         </div>
-        <div class="card" style="text-align: center; color: var(--hint);">
-            Все операции защищены P4Bank
+        <div style="background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--hint);">
+            Звезды используются для покупки подарков
         </div>
     </div>
 
     <div id="deposit" class="content">
-        <div class="card">
-            <b>Пополнение через Telegram Stars</b>
-            <input type="number" id="stars_amt" placeholder="Введите кол-во звезд">
-            <button class="btn" onclick="sendPay()">Купить ⭐</button>
+        <div class="input-group">
+            <b>Пополнение баланса</b>
+            <input type="number" id="stars_amt" placeholder="Введите кол-во">
+            <button class="btn btn-stars" onclick="sendPay()">Купить через Stars ⭐</button>
         </div>
     </div>
 
     <div id="shop" class="content">
         <div class="gift-grid">
-            <div class="gift-card" onclick="buyGift('ny_bear')">🧸 55 ⭐</div>
-            <div class="gift-card" onclick="buyGift('tree')">🎄 55 ⭐</div>
-            <div class="gift-card" onclick="buyGift('love_bear')">❤️ 55 ⭐</div>
-            <div class="gift-card" onclick="buyGift('love_heart')">💝 55 ⭐</div>
-            <div class="gift-card" onclick="buyGift('girl_bear')">🎀 55 ⭐</div>
+            <div class="gift-card" onclick="buyGift('ny_bear')">
+                <span class="gift-icon">🧸</span>
+                <span class="gift-name">NY Bear</span>
+                <div class="gift-price">55 <span class="star">⭐</span></div>
+            </div>
+            <div class="gift-card" onclick="buyGift('tree')">
+                <span class="gift-icon">🎄</span>
+                <span class="gift-name">Christmas Tree</span>
+                <div class="gift-price">55 <span class="star">⭐</span></div>
+            </div>
+            <div class="gift-card" onclick="buyGift('love_bear')">
+                <span class="gift-icon">❤️</span>
+                <span class="gift-name">Love Bear</span>
+                <div class="gift-price">55 <span class="star">⭐</span></div>
+            </div>
+            <div class="gift-card" onclick="buyGift('love_heart')">
+                <span class="gift-icon">💝</span>
+                <span class="gift-name">Sweet Heart</span>
+                <div class="gift-price">55 <span class="star">⭐</span></div>
+            </div>
         </div>
     </div>
 
-    <div class="footer">@P4BankBot</div>
+    <div class="footer-info">P4Bank • Официальный сервис</div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        function updateBalance() {
+        function loadBalance() {
             const params = new URLSearchParams(window.location.search);
-            const bal = params.get('balance');
-            document.getElementById('user_balance').innerHTML = (bal || 0) + ' <span class="star">⭐</span>';
+            const bal = params.get('balance') || 0;
+            document.getElementById('user_balance').innerHTML = bal + ' <span class="star">⭐</span>';
         }
-        updateBalance();
+        loadBalance();
 
         function switchTab(id) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             event.currentTarget.classList.add('active');
+            tg.HapticFeedback.impactOccurred('light');
         }
 
         function sendPay() {
-            const amt = document.getElementById('stars_amt').value;
-            if(amt > 0) {
-                tg.sendData(JSON.stringify({type: 'stars', amount: amt}));
+            const val = document.getElementById('stars_amt').value;
+            if(val > 0) {
+                tg.sendData(JSON.stringify({type: 'stars', amount: val}));
                 tg.close();
             }
         }
 
-        function buyGift(id) {
-            tg.showConfirm("Купить за 55 ⭐?", (ok) => {
+        function buyGift(giftId) {
+            tg.showConfirm("Купить этот подарок за 55 ⭐?", (ok) => {
                 if(ok) {
-                    tg.sendData(JSON.stringify({type: 'withdraw_gift', id: id}));
+                    tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId}));
                     tg.close();
                 }
             });
