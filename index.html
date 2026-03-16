@@ -14,129 +14,28 @@
             --hint: var(--tg-theme-hint-color, #8b96a3);
             --card-border: rgba(255, 255, 255, 0.08);
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .tabs {
-            display: flex;
-            background: var(--sec-bg);
-            padding: 4px;
-            border-radius: 14px;
-            margin-bottom: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-
-        .tab.active {
-            background: var(--bg);
-            color: var(--accent);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
+        body { font-family: -apple-system, system-ui; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+        .tabs { display: flex; background: var(--sec-bg); padding: 4px; border-radius: 14px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; }
+        .tab.active { background: var(--bg); color: var(--accent); }
         .content { display: none; }
-        .content.active { display: block; animation: fadeIn 0.3s ease; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .balance-card {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, rgba(36,139,254,0.15), rgba(36,139,254,0.05));
-            border-radius: 24px;
-            margin-bottom: 20px;
-            border: 1px solid var(--card-border);
-        }
-
+        .content.active { display: block; }
+        .balance-card { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, rgba(36,139,254,0.1), rgba(36,139,254,0.05)); border-radius: 24px; margin-bottom: 20px; border: 1px solid var(--card-border); }
         .balance-val { font-size: 48px; font-weight: 800; margin: 10px 0; }
         .star { color: #f3bc4c; }
-
-        .card {
-            background: var(--sec-bg);
-            padding: 18px;
-            border-radius: 18px;
-            margin-bottom: 15px;
-            border: 1px solid var(--card-border);
-        }
-
-        .gift-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .gift-card {
-            background: var(--bg);
-            border: 1px solid var(--card-border);
-            padding: 15px;
-            border-radius: 16px;
-            text-align: center;
-            transition: transform 0.1s ease;
-        }
-
-        .gift-card:active { transform: scale(0.96); }
-        .gift-emoji { font-size: 32px; display: block; margin-bottom: 8px; }
-        .gift-name { font-size: 11px; font-weight: 500; display: block; margin-bottom: 5px; }
-        .gift-price { color: #f3bc4c; font-weight: bold; font-size: 14px; }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            background: var(--bg);
-            color: var(--text);
-            box-sizing: border-box;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn:active { opacity: 0.8; }
+        .card { background: var(--sec-bg); padding: 18px; border-radius: 18px; margin-bottom: 15px; border: 1px solid var(--card-border); }
+        .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .gift-card { background: var(--bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 16px; text-align: center; }
+        .gift-emoji { font-size: 32px; display: block; }
+        .gift-name { font-size: 11px; display: block; margin: 5px 0; }
+        .gift-price { color: #f3bc4c; font-weight: bold; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid var(--card-border); background: var(--bg); color: var(--text); box-sizing: border-box; }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
         .stars-btn { background: #f3bc4c; color: #000; }
         .crypto-btn { background: #0088cc; color: #fff; margin-top: 10px; }
-
-        .hint-text { font-size: 12px; color: var(--hint); text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
-
     <div class="tabs">
         <div class="tab active" onclick="switchTab('main')">Кошелек</div>
         <div class="tab" onclick="switchTab('deposit')">Пополнить</div>
@@ -145,56 +44,32 @@
 
     <div id="main" class="content active">
         <div class="balance-card">
-            <div style="color: var(--hint); font-size: 12px; letter-spacing: 1px;">ДОСТУПНО</div>
-            <div class="balance-val" id="user_balance">0 <span class="star">⭐</span></div>
-        </div>
-        <div class="card" style="text-align: center; color: var(--hint);">
-            Все операции защищены P4Bank
+            <div style="color: var(--hint); font-size: 12px;">ДОСТУПНО</div>
+            <div class="balance-val" id="user_balance">... <span class="star">⭐</span></div>
         </div>
     </div>
 
     <div id="deposit" class="content">
         <div class="card">
-            <b style="display: block; margin-bottom: 10px;">Telegram Stars</b>
+            <b>Telegram Stars</b>
             <input type="number" id="stars_amt" placeholder="Количество звезд">
-            <button class="btn stars-btn" onclick="sendPay('stars', 'stars_amt')">Купить Stars ⭐</button>
+            <button class="btn stars-btn" onclick="sendPay('stars', 'stars_amt')">Купить ⭐</button>
         </div>
         <div class="card">
-            <b style="display: block; margin-bottom: 10px;">CryptoBot</b>
+            <b>CryptoBot</b>
             <input type="number" id="crypto_amt" placeholder="Сумма в USDT">
-            <button class="btn crypto-btn" onclick="sendPay('crypto', 'crypto_amt')">Оплатить через CryptoBot 💎</button>
+            <button class="btn crypto-btn" onclick="sendPay('crypto', 'crypto_amt')">Оплатить 💎</button>
         </div>
     </div>
 
     <div id="shop" class="content">
         <div class="card">
-            <b>Магазин подарков</b>
+            <b>Магазин (55 ⭐)</b>
             <div class="gift-grid">
-                <div class="gift-card" onclick="buyGift('ny_bear')">
-                    <span class="gift-emoji">🧸</span>
-                    <span class="gift-name">Новогодний мишка</span>
-                    <div class="gift-price">55 ⭐</div>
-                </div>
-                <div class="gift-card" onclick="buyGift('tree')">
-                    <span class="gift-emoji">🎄</span>
-                    <span class="gift-name">Новогодняя елка</span>
-                    <div class="gift-price">55 ⭐</div>
-                </div>
-                <div class="gift-card" onclick="buyGift('love_bear')">
-                    <span class="gift-emoji">🧸❤️</span>
-                    <span class="gift-name">Мишка Love</span>
-                    <div class="gift-price">55 ⭐</div>
-                </div>
-                <div class="gift-card" onclick="buyGift('love_heart')">
-                    <span class="gift-emoji">💝</span>
-                    <span class="gift-name">Сердце Love</span>
-                    <div class="gift-price">55 ⭐</div>
-                </div>
-                <div class="gift-card" onclick="buyGift('girl_bear')">
-                    <span class="gift-emoji">🧸🎀</span>
-                    <span class="gift-name">Девчачий мишка</span>
-                    <div class="gift-price">55 ⭐</div>
-                </div>
+                <div class="gift-card" onclick="buyGift('ny_bear')"><span class="gift-emoji">🧸</span><span class="gift-name">Новогодний мишка</span><span class="gift-price">55 ⭐</span></div>
+                <div class="gift-card" onclick="buyGift('tree')"><span class="gift-emoji">🎄</span><span class="gift-name">Елка</span><span class="gift-price">55 ⭐</span></div>
+                <div class="gift-card" onclick="buyGift('love_bear')"><span class="gift-emoji">🧸❤️</span><span class="gift-name">Мишка Love</span><span class="gift-price">55 ⭐</span></div>
+                <div class="gift-card" onclick="buyGift('love_heart')"><span class="gift-emoji">💝</span><span class="gift-name">Сердце Love</span><span class="gift-price">55 ⭐</span></div>
             </div>
         </div>
     </div>
@@ -202,41 +77,34 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        const userId = tg.initDataUnsafe.user.id;
 
-        // ФУНКЦИЯ ПОЛУЧЕНИЯ БАЛАНСА ИЗ URL
-        function updateBalance() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const balance = urlParams.get('balance');
-            if (balance !== null) {
-                document.getElementById('user_balance').innerHTML = `${balance} <span class="star">⭐</span>`;
-            }
+        async function fetchBalance() {
+            try {
+                // Запрашиваем баланс у Flask сервера
+                const response = await fetch(`/api/balance/${userId}`);
+                const data = await response.json();
+                document.getElementById('user_balance').innerHTML = `${data.balance} <span class="star">⭐</span>`;
+            } catch (e) { console.error(e); }
         }
-        
-        // Запускаем при загрузке
-        updateBalance();
+        fetchBalance();
 
         function switchTab(id) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             event.currentTarget.classList.add('active');
-            tg.HapticFeedback.impactOccurred('medium');
+            if(id === 'main') fetchBalance();
         }
 
         function sendPay(type, inputId) {
             const val = document.getElementById(inputId).value;
-            if (val > 0) {
-                tg.sendData(JSON.stringify({type: type, amount: val}));
-                tg.close();
-            }
+            if (val > 0) { tg.sendData(JSON.stringify({type: type, amount: val})); tg.close(); }
         }
 
         function buyGift(giftId) {
-            tg.showConfirm("Купить этот подарок за 55 ⭐?", (ok) => {
-                if (ok) {
-                    tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId}));
-                    tg.close();
-                }
+            tg.showConfirm("Купить за 55 ⭐?", (ok) => {
+                if (ok) { tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId})); tg.close(); }
             });
         }
     </script>
