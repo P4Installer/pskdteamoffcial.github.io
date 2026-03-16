@@ -50,43 +50,42 @@
         </div>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    function updateBalanceFromUrl() {
+        // Читаем параметры из ссылки
+        const urlParams = new URLSearchParams(window.location.search);
+        const balance = urlParams.get('balance');
         
-        // Важно: если запускаешь на ПК, укажи здесь IP своего компа вместо '/'
-        // Например: 'http://192.168.1.15:5000'
-        const API_BASE = ""; 
+        if (balance !== null) {
+            document.getElementById('user_balance').innerHTML = `${balance} <span class="star">⭐</span>`;
+        } else {
+            document.getElementById('user_balance').innerHTML = `0 <span class="star">⭐</span>`;
+        }
+    }
 
-        async function fetchBalance() {
-            const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 0;
-            try {
-                const response = await fetch(`${API_BASE}/api/balance/${userId}`);
-                const data = await response.json();
-                document.getElementById('user_balance').innerHTML = `${data.balance} <span class="star">⭐</span>`;
-            } catch (e) {
-                document.getElementById('user_balance').innerHTML = `Error <span class="star">⚠️</span>`;
+    // Запускаем при открытии
+    updateBalanceFromUrl();
+
+    function switchTab(id) {
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.currentTarget.classList.add('active');
+        tg.HapticFeedback.impactOccurred('light');
+        // При переключении вкладок баланс остается прежним
+    }
+
+    function buyGift(giftId) {
+        tg.showConfirm("Купить за 55 ⭐?", (ok) => {
+            if (ok) {
+                tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId}));
+                tg.close();
             }
-        }
-
-        fetchBalance();
-
-        function switchTab(id) {
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.currentTarget.classList.add('active');
-            if(id === 'main') fetchBalance();
-        }
-
-        function buyGift(giftId) {
-            tg.showConfirm("Купить за 55 ⭐?", (ok) => {
-                if (ok) {
-                    tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId}));
-                    tg.close();
-                }
-            });
-        }
-    </script>
+        });
+    }
+</script>
 </body>
 </html>
