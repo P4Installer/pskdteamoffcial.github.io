@@ -2,90 +2,57 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>P4Bank</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --bg: var(--tg-theme-bg-color, #13171c);
-            --text: var(--tg-theme-text-color, #ffffff);
-            --accent: var(--tg-theme-button-color, #248bfe);
-            --sec-bg: var(--tg-theme-secondary-bg-color, #1c232d);
-            --hint: var(--tg-theme-hint-color, #8b96a3);
-            --card-border: rgba(255, 255, 255, 0.08);
-        }
-        body { font-family: -apple-system, system-ui; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
-        .tabs { display: flex; background: var(--sec-bg); padding: 4px; border-radius: 14px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; }
+        :root { --bg: #13171c; --text: #fff; --accent: #248bfe; --sec: #1c232d; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+        .tabs { display: flex; background: var(--sec); padding: 4px; border-radius: 14px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; }
         .tab.active { background: var(--bg); color: var(--accent); }
         .content { display: none; }
         .content.active { display: block; }
-        .balance-card { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, rgba(36,139,254,0.1), rgba(36,139,254,0.05)); border-radius: 24px; margin-bottom: 20px; border: 1px solid var(--card-border); }
-        .balance-val { font-size: 48px; font-weight: 800; margin: 10px 0; }
-        .star { color: #f3bc4c; }
-        .card { background: var(--sec-bg); padding: 18px; border-radius: 18px; margin-bottom: 15px; border: 1px solid var(--card-border); }
-        .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .gift-card { background: var(--bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 16px; text-align: center; }
-        .gift-emoji { font-size: 32px; display: block; }
-        .gift-name { font-size: 11px; display: block; margin: 5px 0; }
-        .gift-price { color: #f3bc4c; font-weight: bold; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid var(--card-border); background: var(--bg); color: var(--text); box-sizing: border-box; }
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
-        .stars-btn { background: #f3bc4c; color: #000; }
-        .crypto-btn { background: #0088cc; color: #fff; margin-top: 10px; }
+        .balance-card { text-align: center; padding: 40px 20px; background: rgba(36,139,254,0.1); border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); }
+        .balance-val { font-size: 48px; font-weight: 800; }
+        .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .gift-card { background: var(--sec); padding: 15px; border-radius: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('main')">Кошелек</div>
-        <div class="tab" onclick="switchTab('deposit')">Пополнить</div>
+        <div class="tab active" onclick="switchTab('main')">Банк</div>
         <div class="tab" onclick="switchTab('shop')">Магазин</div>
     </div>
 
     <div id="main" class="content active">
         <div class="balance-card">
-            <div style="color: var(--hint); font-size: 12px;">ДОСТУПНО</div>
-            <div class="balance-val" id="user_balance">... <span class="star">⭐</span></div>
-        </div>
-    </div>
-
-    <div id="deposit" class="content">
-        <div class="card">
-            <b>Telegram Stars</b>
-            <input type="number" id="stars_amt" placeholder="Количество звезд">
-            <button class="btn stars-btn" onclick="sendPay('stars', 'stars_amt')">Купить ⭐</button>
-        </div>
-        <div class="card">
-            <b>CryptoBot</b>
-            <input type="number" id="crypto_amt" placeholder="Сумма в USDT">
-            <button class="btn crypto-btn" onclick="sendPay('crypto', 'crypto_amt')">Оплатить 💎</button>
+            <div style="color: #8b96a3; font-size: 12px;">МОЙ БАЛАНС</div>
+            <div class="balance-val" id="user_balance">... ⭐</div>
         </div>
     </div>
 
     <div id="shop" class="content">
-        <div class="card">
-            <b>Магазин (55 ⭐)</b>
-            <div class="gift-grid">
-                <div class="gift-card" onclick="buyGift('ny_bear')"><span class="gift-emoji">🧸</span><span class="gift-name">Новогодний мишка</span><span class="gift-price">55 ⭐</span></div>
-                <div class="gift-card" onclick="buyGift('tree')"><span class="gift-emoji">🎄</span><span class="gift-name">Елка</span><span class="gift-price">55 ⭐</span></div>
-                <div class="gift-card" onclick="buyGift('love_bear')"><span class="gift-emoji">🧸❤️</span><span class="gift-name">Мишка Love</span><span class="gift-price">55 ⭐</span></div>
-                <div class="gift-card" onclick="buyGift('love_heart')"><span class="gift-emoji">💝</span><span class="gift-name">Сердце Love</span><span class="gift-price">55 ⭐</span></div>
-            </div>
+        <div class="gift-grid">
+            <div class="gift-card" onclick="buyGift('ny_bear')">🧸 Мишка 55⭐</div>
+            <div class="gift-card" onclick="buyGift('tree')">🎄 Елка 55⭐</div>
+            <div class="gift-card" onclick="buyGift('love_bear')">❤️ Мишка 55⭐</div>
+            <div class="gift-card" onclick="buyGift('love_heart')">💝 Сердце 55⭐</div>
+            <div class="gift-card" onclick="buyGift('girl_bear')">🎀 Мишка 55⭐</div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand();
         const userId = tg.initDataUnsafe.user.id;
 
         async function fetchBalance() {
             try {
-                // Запрашиваем баланс у Flask сервера
-                const response = await fetch(`/api/balance/${userId}`);
-                const data = await response.json();
-                document.getElementById('user_balance').innerHTML = `${data.balance} <span class="star">⭐</span>`;
-            } catch (e) { console.error(e); }
+                const res = await fetch(`/api/balance/${userId}`);
+                const data = await res.json();
+                document.getElementById('user_balance').innerText = data.balance + " ⭐";
+            } catch (e) { console.log(e); }
         }
         fetchBalance();
 
@@ -97,14 +64,12 @@
             if(id === 'main') fetchBalance();
         }
 
-        function sendPay(type, inputId) {
-            const val = document.getElementById(inputId).value;
-            if (val > 0) { tg.sendData(JSON.stringify({type: type, amount: val})); tg.close(); }
-        }
-
         function buyGift(giftId) {
-            tg.showConfirm("Купить за 55 ⭐?", (ok) => {
-                if (ok) { tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId})); tg.close(); }
+            tg.showConfirm("Купить подарок за 55 ⭐?", (ok) => {
+                if(ok) {
+                    tg.sendData(JSON.stringify({type: 'withdraw_gift', id: giftId}));
+                    tg.close();
+                }
             });
         }
     </script>
